@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers\Home;
 
-use Email;
+use Mail;
 use Log;
+use DB;
 use Illuminate\Http\Request;
 use App\Models\Home\Student;
 use App\Http\Controllers\Controller;
@@ -22,30 +23,17 @@ class UserController extends Controller
     {
         $date = date('Y-m-d');
         $user = new User();
-        $birthday = $user->getinfobybirthday($date);
-        return view('Home.User.user' , compact('birthday'));
-    }
-
-    /**
-     * 传递数据以易于阅读的样式格式化后输出
-     * @param int $data 数据
-     * @param int $type
-     * @return result
-     */
-    function debug($data, $type = ''){
-        // 定义样式
-        $str='<pre style="display: block;padding: 9.5px;margin: 44px 0 0 0;font-size: 13px;line-height: 1.42857;color: #333;word-break: break-all;word-wrap: break-word;background-color: #F5F5F5;border: 1px solid #CCC;border-radius: 4px;">';
-        // 如果是boolean或者null直接显示文字；否则print
-        if (is_bool($data)) {
-            $show_data=$data ? 'true' : 'false';
-        }elseif (is_null($data)) {
-            $show_data='null';
-        }else{
-            $show_data=print_r($data,true);
-            $str.=$show_data;
-            $str.='</pre>';
-            echo $str;
-            exit;
-        }
+        $info = $user->getinfobybirthday($date);
+        //return view('Home.User.user', compact('birthday'));
+        Mail::raw('邮件测试内容', function ($m) use ($info) {
+            $m->from('ft910310@qq.com', '费腾fermi');
+            $m->subject('邮件主题：这是一条测试邮件！');
+            $m->to($info['email']);
+        });
+        // $user = DB::table('users')->where('birthday', $date)->first();
+        // Mail::send('Home.user.reminder', ['name' => $user->name], function ($m) use ($user) {
+        //     $m->from('ft910310@qq.com', 'Your Application');
+        //     $m->to($user->email, $user->name)->subject('Your Reminder!');
+        // });
     }
 }
