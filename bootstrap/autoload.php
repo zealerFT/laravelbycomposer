@@ -14,5 +14,15 @@ define('LARAVEL_START', microtime(true));
 |
 */
 
-require_once __DIR__.'/../app/helpers.php';//通用函数
 require __DIR__.'/../vendor/autoload.php';
+
+//import helper
+$fileArr = array(
+    __DIR__.'/../app/Helper/common.php'
+);
+
+foreach ($fileArr as $key => $value) {
+    if (file_exists($value)) {
+        require $value;
+    }
+}
