@@ -14,4 +14,5 @@ define('LARAVEL_START', microtime(true));
 |
 */
 
+require_once __DIR__.'/../app/helpers.php';//通用函数
 require __DIR__.'/../vendor/autoload.php';
