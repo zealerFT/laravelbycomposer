@@ -52,14 +52,13 @@ class UserController extends Controller
         $user = new User();
         $info = $user->getinfobybirthday($date);
         if (!empty($info)) {
-          $data = array('view' => 'Home.User.user', 'view_data' => array('name' => $info['name']));
-          $url = public_path('images\zoo.jpg');
-          dispatch(new SendEmail($info['email'], '邮件队列测试', $data, $url));
-          \Log::info("邮件发送队列创建成功");
+            $data = array('view' => 'Home.User.user', 'view_data' => array('name' => $info['name']));
+            $url = public_path('images/zoo.jpg');
+            dispatch(new SendEmail($info['email'], '邮件队列测试', $data, $url));
+            \Log::info("邮件发送队列创建成功");
         } else {
-          \Log::info("邮件发送队列创建失败");
+            \Log::info("邮件发送队列创建失败");
         }
-
     }
 
     /**
@@ -80,7 +79,7 @@ class UserController extends Controller
         if (!$accounts['accounts']) {
             return Log::info('今天无会员生日！');
         }
-        $users = DB::connection('mysql2')->table('user')->whereIn('account', $accounts['accounts'])->select('name','mobile','created_at')->get();
+        $users = DB::connection('mysql2')->table('user')->whereIn('account', $accounts['accounts'])->select('name', 'mobile', 'created_at')->get();
         if ($users) {
             foreach ($users as $value) {
                 $data['name'] = $value->name ? $value->name : '用户';
