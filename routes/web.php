@@ -26,6 +26,7 @@ Route::group(['namespace' => 'home'], function() {
    //Route::any('student/update/{id}', 'StudentController@update')->middleware('student');
    Route::any('student/update/{id}', 'StudentController@update')->middleware(Student::class);
    Route::any('User/docorn', 'UserController@sendEmailReminder');
+   Route::any('User/queue', 'UserController@emailqueue');
 });
 
 Auth::routes();

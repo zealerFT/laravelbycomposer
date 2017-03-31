@@ -4,6 +4,8 @@ namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use App\Http\Controllers\Home\UserController as User;
+use DB;
 
 class Kernel extends ConsoleKernel
 {
@@ -24,8 +26,24 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')
-        //          ->hourly();
+        $filePath = public_path('file/test.txt');
+        // 生日祝福邮件
+        $schedule->call(function () {
+            $Birthemail = new User();
+            $Birthemail->emailqueue();
+            \Log::info("已执行生日祝福邮件任务调度");
+        })->dailyAt('18:00');
+        // 生日祝福短信
+        // $schedule->call(function () {
+        //     $BirthSms = new User();
+        //     $BirthSms->sendBlessing()->withoutOverlapping();;
+        // })->dailyAt('12:00');
+        $schedule->call(function () use ($filePath) {
+            DB::table('log')->delete();
+            \Log::info("已执行删除日志任务调度，发送了文件到相应邮箱：".$filePath);
+        })->dailyAt('18:00')
+        ->sendOutputTo($filePath)
+        ->emailOutputTo('2895217805@qq.com');
     }
 
     /**
