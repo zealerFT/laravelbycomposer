@@ -43,4 +43,10 @@ class Student extends Model
         }
         return $arr;
     }
+
+    public function getstudentlist()
+    {
+        $info = $this->get();
+        return $info;
+    }
 }

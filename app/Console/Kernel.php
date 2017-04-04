@@ -32,7 +32,7 @@ class Kernel extends ConsoleKernel
             $Birthemail = new User();
             $Birthemail->emailqueue();
             \Log::info("已执行生日祝福邮件任务调度");
-        })->everyMinute();
+        })->dailyAt('18:00');
         // 生日祝福短信
         // $schedule->call(function () {
         //     $BirthSms = new User();
