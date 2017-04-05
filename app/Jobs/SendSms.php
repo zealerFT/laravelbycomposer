@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Services\SmsServices;
+use iscms\Alisms\SendsmsPusher as Sms;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -38,12 +38,12 @@ class SendSms implements ShouldQueue
      */
     public function handle()
     {
-      $sms = new SmsServices();
-      $result = $sms->sendSmsByAli($this->phone, $this->title, $this->content, $this->code);
-      if ($result->result->success == 1) {
-          \Log::info('生日短信队列执行成功！');
-      } else {
-          \Log::info('生日短信队列执行失败：'.$result->result->msg);
-      }
+        $sms = new Sms();
+        $result = $sms->send($this->phone, $this->title, $this->content, $this->code);
+        if ($result->result->success == 1) {
+            \Log::info('生日短信队列执行成功！');
+        } else {
+            \Log::info('生日短信队列执行失败：'.$result->result->msg);
+        }
     }
 }
