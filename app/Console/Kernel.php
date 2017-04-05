@@ -32,18 +32,23 @@ class Kernel extends ConsoleKernel
             $Birthemail = new User();
             $Birthemail->emailqueue();
             \Log::info("已执行生日祝福邮件任务调度");
-        })->dailyAt('18:00');
+        })->dailyAt('10:45');
         // 生日祝福短信
-        // $schedule->call(function () {
-        //     $BirthSms = new User();
-        //     $BirthSms->sendBlessing()->withoutOverlapping();;
-        // })->dailyAt('12:00');
-        $schedule->call(function () use ($filePath) {
-            DB::table('log')->delete();
-            \Log::info("已执行删除日志任务调度，发送了文件到相应邮箱：".$filePath);
-        })->dailyAt('18:00')
-        ->sendOutputTo($filePath)
-        ->emailOutputTo('2895217805@qq.com');
+        $schedule->call(function () {
+            $BirthSms = new User();
+            $BirthSms->smsqueue();
+            \Log::info("已执行生日祝福短信任务调度");
+        })->dailyAt('10:45');
+        $schedule->call(function () {
+            DB::table('failed_jobs')->delete();
+            \Log::info("已完成失败队列清空任务");
+        })->dailyAt('11:00');
+        // $schedule->call(function () use ($filePath) {
+        //     DB::table('log')->delete();
+        //     \Log::info("已执行删除日志任务调度，发送了文件到相应邮箱：".$filePath);
+        // })->dailyAt('18:00')
+        // ->sendOutputTo($filePath)
+        // ->emailOutputTo('2895217805@qq.com');
     }
 
     /**

@@ -31,6 +31,7 @@ Route::group(['namespace' => 'home'], function () {
     Route::any('User/setcache', 'UserController@cacheredis');
     Route::any('User/getcache', 'UserController@getcacheredis');
     Route::any('User/upload', 'UserController@qiniuupload')->name('upload');
+    Route::any('User/smsqueue', 'UserController@smsqueue');
 });
 
 Auth::routes();

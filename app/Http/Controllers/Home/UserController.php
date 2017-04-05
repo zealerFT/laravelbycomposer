@@ -14,6 +14,7 @@ use App\Models\Home\User;
 use App\Jobs\SendEmail;
 use App\Events\SendSms;
 use Illuminate\Support\Facades\Redis;
+use App\Jobs\SendSms as SendSmsQueue;
 
 class UserController extends Controller
 {
@@ -59,12 +60,34 @@ class UserController extends Controller
             $data = array('view' => 'Home.User.user', 'view_data' => array('name' => $info['name']));
             $url = public_path('images/zoo.jpg');
             dispatch(new SendEmail($info['email'], '邮件队列测试', $data, $url));
-            \Log::info("邮件发送队列创建成功");
+            \Log::info("邮件队列创建成功");
         } else {
-            \Log::info("邮件发送队列创建失败");
+            \Log::info("邮件队列创建失败：今天没有人过生日！");
         }
     }
 
+    /**
+     * 短信队列
+     * @return [type] [description]
+     */
+    public function smsqueue()
+    {
+        $date = date('Y-m-d');
+        $user = new User();
+        $info = $user->getinfobybirthday($date);
+        if (!empty($info)) {
+            $info['content'] = json_encode(array('name' => $info['name'], 'birthday' => $info['birthday']));
+            dispatch(new SendSmsQueue($info));
+            \Log::info("短信队列创建成功");
+        } else {
+            \Log::info("短信队列失败：今天没有人过生日！");
+        }
+    }
+
+    /**
+     * 短信事件
+     * @return [type] [description]
+     */
     public function smsevent()
     {
         $date = date('Y-m-d');
@@ -72,7 +95,7 @@ class UserController extends Controller
         $info = $user->getinfobybirthday($date);
         if (!empty($info)) {
             $info['content'] = json_encode(array('name' => $info['name'], 'birthday' => $info['birthday']));
-            Event::fire(new SendSMS($info));
+            Event::fire(new SendSms($info));
             //event(new SendSMS($info));
         } else {
             \Log::info("短信监听事件失败：今天没有人过生日！");
